@@ -1,0 +1,71 @@
+CREATE
+  (charlie:Person {name: 'Charlie Sheen'}),
+  (martin:Person {name: 'Martin Sheen'}),
+  (michael:Person {name: 'Michael Douglas'}),
+  (oliver:Person {name: 'Oliver Stone'}),
+  (rob:Person {name: 'Rob Reiner'}),
+  (wallStreet:Movie {title: 'Wall Street'}),
+  (charlie)-[:ACTED_IN {role: 'Bud Fox'}]->(wallStreet),
+  (martin)-[:ACTED_IN {role: 'Carl Fox'}]->(wallStreet),
+  (michael)-[:ACTED_IN {role: 'Gordon Gekko'}]->(wallStreet),
+  (oliver)-[:DIRECTED]->(wallStreet),
+  (thePresident:Movie {title: 'The American President'}),
+  (martin)-[:ACTED_IN {role: 'A.J. MacInerney'}]->(thePresident),
+  (michael)-[:ACTED_IN {role: 'President Andrew Shepherd'}]->(thePresident),
+  (rob)-[:DIRECTED]->(thePresident),
+  (martin)-[:FATHER_OF]->(charlie)
+
+ MATCH (n) RETURN n
+
+MATCH (n:Movie) RETURN n.title
+
+MATCH (n:Movie) RETURN n
+
+MATCH (director {name: 'Oliver Stone'})--(movie) RETURN movie.title
+
+MATCH (director {name: 'Oliver Stone'})--(movie) RETURN movie
+
+
+MATCH (a)-[:ACTED_IN {role: 'Bud Fox'}]-(b) RETURN a, b
+
+MATCH (n {title: 'Wall Street'})--(p) RETURN p,n
+
+MATCH (n {title: 'Wall Street'})<--(p) RETURN p,n
+
+MATCH (n {title: 'Wall Street'})<--(p) RETURN p,n
+
+MATCH (a)-[:ACTED_IN ]-(b) RETURN a, b
+
+MATCH (wallstreet:Movie {title: 'Wall Street'})<-[:ACTED_IN]-(actor)
+RETURN actor,wallstreet
+
+MATCH (wallstreet:Movie {title: 'Wall Street'})<-[:ACTED_IN]-(actor)
+RETURN actor,wallstreet
+
+LOAD CSV WITH HEADERS FROM 'file:///wysers.csv' AS line
+FIELDTERMINATOR ','
+MERGE (p:Wyser {wyser_id: toInteger(line.wyser_id)})
+SET p.name = line.name, p.surname = line.surname
+
+LOAD CSV WITH HEADERS FROM 'file:///certifications.csv' AS line
+FIELDTERMINATOR ','
+MERGE (p:Certification {certification_id: toInteger(line.certification_id)})
+SET p.certification_name = line.certification_name, p.certification_link = line.certification_link
+
+LOAD CSV WITH HEADERS FROM 'file:///years.csv' AS line
+FIELDTERMINATOR ','
+MERGE (p:Year {year_id: toInteger(line.year_id)})
+SET p.year = line.year_value
+
+LOAD CSV WITH HEADERS FROM 'file:///wysers_certifications.csv' AS line
+FIELDTERMINATOR ','
+MATCH (w:Wyser { wyser_id: toInteger(line.wyser_id) })
+MATCH (c:Certification { certification_id: toInteger(line.certification_id) })
+MATCH (y:Year { year_id: toInteger(line.year_id) })
+MERGE (w)-[:CERTIFIED {year: y.year}]->(c)
+
+MATCH (n:Wyser ) WHERE n.name= 'DIEGO' RETURN n
+
+MATCH (n:Wyser {name: 'DIEGO'})-->(p) RETURN n,p
+
+MATCH (n:Certification {certification_name: 'GCP ACE'})<--(p) RETURN n,p

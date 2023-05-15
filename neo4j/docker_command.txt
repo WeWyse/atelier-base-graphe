@@ -1,0 +1,6 @@
+docker pull neo4j
+docker run --name neo4j-service -p7474:7474 -p7687:7687 -e NEO4J_AUTH=neo4j/s3cr3ts3cr3t neo4j
+docker cp wysers.csv <id-container>://var/lib/neo4j/import/wysers.csv
+docker cp certifications.csv <id-container>://var/lib/neo4j/import/certifications.csv
+docker cp wysers_certifications.csv <id-container>://var/lib/neo4j/import/wysers_certifications.csv
+docker cp years.csv <id-container>://var/lib/neo4j/import/years.csv
